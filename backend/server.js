@@ -9,7 +9,11 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors({ origin: process.env.CORS_ORIGIN || '*' }));
+// CORS: support multiple origins via comma-separated list in CORS_ORIGIN
+const corsEnv = process.env.CORS_ORIGIN || '*';
+const allowedOrigins = corsEnv.split(',').map(o => o.trim()).filter(Boolean);
+const corsOptions = allowedOrigins.includes('*') ? {} : { origin: allowedOrigins };
+app.use(cors(corsOptions));
 app.use(express.json());
 
 // Routes
